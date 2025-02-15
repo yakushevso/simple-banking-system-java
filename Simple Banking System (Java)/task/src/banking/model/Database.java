@@ -1,22 +1,23 @@
 package banking.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Database {
-    private final List<Account> data = new ArrayList<>();
+    private final Map<String, Account> data = new HashMap<>();
 
-    public void setData(Account account) {
-        data.add(account);
+    public void setAccount(Account account) {
+        data.put(account.number(), account);
     }
 
-    public Account getAccount(String name, String pin) {
-        for (Account account : data) {
-            if (name.equals(account.number()) && pin.equals(account.pin())) {
-                return account;
-            }
-        }
+    public Account getAccount(String number) {
+        return data.get(number);
+    }
 
-        return null;
+    public boolean isAccountExist(String number) {
+        return data.containsKey(number);
+    }
+
+    public boolean isAuth(String number, String pin) {
+        return pin.equals(data.get(number).pin());
     }
 }

@@ -13,7 +13,7 @@ public class AccGenerator {
 
     private static String generateCardNumber() {
         int identifier = new Random().nextInt(100000000, 999999999);
-        String checksum = "4";
+        int checksum = createLuhn(BIN + identifier);
 
         return BIN + identifier + checksum;
     }
@@ -27,5 +27,27 @@ public class AccGenerator {
         }
 
         return String.valueOf(pin);
+    }
+
+    private static int createLuhn(String num) {
+        int sum = 0;
+        boolean flag = true;
+
+        for (int i = num.length() - 1; i >= 0; i--) {
+            int n = num.charAt(i) - '0';
+
+            if (flag) {
+                n *= 2;
+
+                if (n > 9) {
+                    n -= 9;
+                }
+            }
+
+            sum += n;
+            flag = !flag;
+        }
+
+        return (10 - (sum % 10)) % 10;
     }
 }

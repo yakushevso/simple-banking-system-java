@@ -38,8 +38,12 @@ public class BankingSystem {
     }
 
     private void createAccount() {
-        Account account = AccGenerator.createAccount();
-        database.setData(account);
+        Account account;
+        do {
+            account = AccGenerator.createAccount();
+        } while (database.isAccountExist(account.number()));
+
+        database.setAccount(account);
 
         ui.displayMessage(Messages.CARD_CREATED);
 
@@ -52,18 +56,16 @@ public class BankingSystem {
 
     private void login() {
         ui.displayMessage(Messages.ENTER_CARD);
-        String num = ui.getInput();
+        String number = ui.getInput();
 
         ui.displayMessage(Messages.ENTER_PIN);
         String pin = ui.getInput();
 
-        Account account = database.getAccount(num, pin);
-
         ui.displayMessage("");
 
-        if (account != null) {
+        if (database.isAccountExist(number) && database.isAuth(number, pin)) {
             ui.displayMessage(Messages.LOGGED_IN);
-            accountMenu(account);
+            accountMenu(database.getAccount(number));
         } else {
             ui.displayMessage(Messages.WRONG_NUM_OR_PIN);
         }
